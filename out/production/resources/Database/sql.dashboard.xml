@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- Mapper 설정 -->
+<mapper namespace="Dashboard">
+	<select id="MemberGet" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT * FROM USR_MT where USR_ID = #{id};
+	</select>
+	<select id="GraphDataGet" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+            SELECT  *,
+                    left(convert(varchar, UPD_DT, 120),16) as upd_time
+            FROM 	MTR_MI_HIS
+            where 	DVC_SRNO = #{srno}
+            AND		UPD_DT  BETWEEN #{start} and #{end}
+            ORDER BY UPD_DT ASC;
+	</select>
+    <select id="GraphPointGet" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+            SELECT
+            MAX(t.CIAQI) as MAX_CIAQI,
+            MAX(t.TVOC_IDX) as MAX_TVOC_IDX,
+            MAX(t.CO2_IDX) as MAX_CO2_IDX,
+            MAX(t.DUST_IDX) as MAX_DUST_IDX,
+            MAX(t.TEMP) as MAX_TEMP,
+            MAX(t.HUM) as MAX_HUM,
+            MIN(t.CIAQI) as MIN_CIAQI,
+            MIN(t.TVOC_IDX) as MIN_TVOC_IDX,
+            MIN(t.CO2_IDX) as MIN_CO2_IDX,
+            MIN(t.DUST_IDX) as MIN_DUST_IDX,
+            MIN(t.TEMP) as MIN_TEMP,
+            MIN(t.HUM) as MIN_HUM
+            from (
+                SELECT  *,
+                        left(convert(varchar, UPD_DT, 120),16) as upd_time
+                FROM 	MTR_MI_HIS
+                where 	DVC_SRNO = #{srno}
+                AND		UPD_DT  BETWEEN #{start} and #{end}
+            ) t;
+    </select>
+</mapper>

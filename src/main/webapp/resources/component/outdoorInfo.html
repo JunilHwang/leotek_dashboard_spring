@@ -1,0 +1,44 @@
+<div class="outdoorInfo">
+    <strong>{{name}}</strong>
+    <div class="state">
+        <div class="cycle {{color}}"></div>
+        <div class="score">
+            <span>Score</span>
+            <strong>{{score}}</strong>
+        </div>
+    </div>
+    <ul>
+        <li>
+            <span class="lbl">Temp.</span>
+            <span class="desc">{{temp}}  <span class="unit">℃</span></span>
+        </li>
+        <li>
+            <span class="lbl">Hum.</span>
+            <span class="desc">{{hum}} <span class="unit">%</span></span>
+        </li>
+        <li>
+            <span class="lbl">Dust</span>
+            <span class="desc">{{dust}} <span class="unit">μg</span></span>
+        </li>
+    </ul>
+</div>
+<style>
+.outdoorInfo { width: 250px; border-radius: 10px; background: #fff;}
+.outdoorInfo > strong { text-align: center; font-size: 23px; display: block; padding: 30px 0; font-weight: 400; }
+.outdoorInfo .state { display: flex; align-items: center; text-align: center; box-sizing: border-box; padding: 0 20px; }
+.outdoorInfo .state > div { width: 50%; }
+.outdoorInfo .cycle:before { content: ""; display: inline-block; width: 50px; height: 50px; border-radius: 100%; background: #fff; color: #fff; border: none; line-height: 50px; text-align: center; vertical-align: middle; }
+.outdoorInfo .cycle.color1:before { background: #339cd0; }
+.outdoorInfo .cycle.color2:before { background: #8fd400; }
+.outdoorInfo .cycle.color3:before { background: #ffbe23; }
+.outdoorInfo .cycle.color4:before { background: #ff6961; }
+.outdoorInfo .score { margin-top: -10px; }
+.outdoorInfo .score span, .outdoorInfo .score strong { display: block; line-height: 120%; }
+.outdoorInfo .score span { font-size: 20px; color: #444; }
+.outdoorInfo .score strong { font-size: 45px; font-family: "verdana"; font-weight: bold; line-height: 80%; }
+.outdoorInfo ul { height: 200px; display: flex; flex-flow: column; justify-content: center; margin-top: 20px;}
+.outdoorInfo ul li { line-height: 40px; display: flex; justify-content: space-between; font-size: 17px; border-bottom: 1px solid #e0e0e0; }
+.outdoorInfo ul li:nth-child(5) { border-bottom: none; }
+.outdoorInfo .unit { font-size: 13px; }
+.outdoorInfo .please { text-align: center; display: flex; flex-flow: column; justify-content: center; height: 100%; font-size: 45px; font-family: "NanumBarunGothic", "Nanum Barun Gothic", "sans-serif", "Myriad", "Arial"; font-weight: 300; }
+</style>
