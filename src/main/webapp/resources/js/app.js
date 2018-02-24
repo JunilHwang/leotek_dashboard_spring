@@ -13,8 +13,8 @@ var bus = new Vue({
 			return obj ? JSON.parse(obj) : null;
 		}()),
 		activeData:null,
-		graphPoint:null,
-		graphData:[],
+        graphData:localStorage.getItem("graph_data") ? JSON.parse(localStorage.getItem("graph_data")) : [],
+        graphPoint:localStorage.getItem("graph_point") ? JSON.parse(localStorage.getItem("graph_point")) : {},
 		graphDataPart:[],
 		graphType:'CIAQI',
 		graphLoading:false,
@@ -60,6 +60,8 @@ var bus = new Vue({
 						jsonData.data.reverse();
 						graphCreate();
 						_this.graphNone=false;
+						localStorage.setItem("graph_data",JSON.stringify(jsonData.data));
+						localStorage.setItem("graph_point",JSON.stringify(jsonData.point));
 					} else {
 						_this.graphData = [];
 						_this.graphPoint = {};
@@ -148,7 +150,6 @@ function site(){
 							obj['list'] = data.Data;
 						}
 					}
-					console.log(option);
 					db.get(option);
 					return obj;
 				}
