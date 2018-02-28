@@ -22,7 +22,6 @@ var dataProcessor = new Vue({
 				async: false,
 				success:function(data){
 					if(data){
-						console.log(data);
 						bus.member = data;
 						alert('로그인 되었습니다.');
 					} else {

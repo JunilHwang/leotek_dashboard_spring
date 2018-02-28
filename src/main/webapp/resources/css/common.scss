@@ -136,14 +136,14 @@ img{max-width:100%;max-height:100%;border:0;margin:0;padding:0;}
 			ul{padding-top:0;display:flex;}
 			li{height:50px;line-height:50px;width:25%;}
 			a:before{content:none;}
-		}		
+		}
 	}
 	@include mobile() {
 		$std:640px;
 		.logo{font-size:vw(25px,$std);
 			img{height:20px;margin-top:0;}
 			span{top:3px;position:relative;margin-left:5px;}
-		}	
+		}
 	}
 }
 .site-content{padding:180px 90px 90px 180px;background:#ededed;color:$color5;
@@ -161,6 +161,35 @@ img{max-width:100%;max-height:100%;border:0;margin:0;padding:0;}
 		.content-title{font-size:vw(25px,$std);margin-bottom:vw(30px,$std);}
 	}
 }
+.home{width:100%;height:100%;
+	.title_comment{float:right;margin-top:-30px;}
+	.part1{display:flex;width:50%;
+		>li{width:calc(50% - 10px);height:370px;border-radius:10px;background:#fff;box-shadow:3px 3px 5px #bbb;}
+		>li+li{margin-left:20px}
+		.dvc_name{text-align:center;font-size:18px;display:block;padding:30px 0;font-weight:400;}
+		.state{display:flex;align-items:center;text-align:center;box-sizing:border-box;padding:0 20px;
+			>div{width:50%;}
+		}
+		.cycle{
+			&:before{content:"";@include cycle(50px,#fff,#fff);vertical-align:middle;background:no-repeat center / cover;}
+			&.color1:before{background:url(../img/icon-color1.png);}
+			&.color2:before{background:url(../img/icon-color2.png);}
+			&.color3:before{background:url(../img/icon-color3.png);}
+			&.color4:before{background:url(../img/icon-color4.png);}
+		}
+		.score{margin-top:-10px;
+			span,strong{display:block;line-height:120%;}
+			span{font-size:20px;color:#444;}
+			strong{font-size:45px;font-family:"verdana";font-weight:200;line-height:80%;}
+		}
+		ul{height:200px;display:flex;flex-flow:column;justify-content:center;margin-top:20px;padding:0 25px;
+			li{line-height:40px;display:flex;justify-content:space-between;font-size:13px;border-bottom:1px solid #e0e0e0}
+			li:nth-child(5){border-bottom:none;}
+		}
+		.unit{font-size:13px;}
+		.please{text-align:center;display:flex;flex-flow:column;justify-content:center;height:100%;font-size:45px;font-family:$font2;font-weight:300;}
+	}
+}
 .content-01{position:relative;
 	@include clr();
 	>ul{float:left;}
@@ -173,7 +202,7 @@ img{max-width:100%;max-height:100%;border:0;margin:0;padding:0;}
 		}
 		.cycle{
 			&:before{content:"";@include cycle(50px,#fff,#fff);vertical-align:middle;}
-			&.color1:before{background:$color1;}	
+			&.color1:before{background:$color1;}
 			&.color2:before{background:$color2;}
 			&.color3:before{background:$color3;}
 			&.color4:before{background:$color4;}

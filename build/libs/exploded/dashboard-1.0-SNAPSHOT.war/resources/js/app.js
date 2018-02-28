@@ -1,5 +1,6 @@
 var bus = new Vue({
 	data:{
+		isHome:true,
 		member:dataProcessor.getMember(),
 		device:localStorage.getItem('device') ? JSON.parse(localStorage.getItem('device')) : [],
 		indoor:localStorage.getItem('device_indoor') ? JSON.parse(localStorage.getItem('device_indoor')) : [],
@@ -113,6 +114,33 @@ function site(){
 						alert('로그아웃 되었습니다.');
 						bus.member = false;
 					});
+				}
+			}
+		},
+		'home':{
+			template:getTemplate('home'),
+			data:function(){
+				return {
+					nowIndoor:{
+                        DVC_NM:'TestIndoor',
+                        color:'color1',
+                        score:'50',
+                        temp:'1',
+                        hum:'2',
+                        dust:'3',
+                        co2:'4',
+                        tvoc:'5',
+					},
+					nowOutdoor:{
+                        DVC_NM:'TestOutdoor',
+                        color:'color2',
+                        score:'50',
+                        temp:'1',
+                        hum:'2',
+                        dust:'3',
+                        co2:'4',
+                        tvoc:'5',
+					}
 				}
 			}
 		},
@@ -233,10 +261,12 @@ function site(){
 				$(".datepicker.end").datepicker({"minDate":new Date()})
 				$(".datepicker").val(getNow());
 				if(bus.activeData) {
-                    bus.getGraph();
+                    if(!bus.isHome) bus.getGraph();
                     setInterval(function () {
-                        bus.getGraph();
-                        initMap();
+                        if(!bus.isHome) {
+                            bus.getGraph();
+                            initMap();
+                        }
                     }, 1000 * 30)
                 }
 			}
@@ -622,6 +652,11 @@ $(document)
 })
 .on("click",".gnb li",function(){
 	var target = $(this).data("target");
+	if(target == '.home') {
+		$(".gnb li.active").removeClass("active");
+		$(this).addClass("active");
+        return false;
+    }
 	var _this = $(this);
 	if($(target).length){
 		var top = $(target).offset().top-120;
@@ -639,7 +674,7 @@ $.datepicker.setDefaults({
 })
 
 $(window).on("scroll load",function(){
-	if($(".content-01,.content-02,.content-03,.content-04").length){
+	if(bus.isHome == false) if($(".content-01,.content-02,.content-03,.content-04").length){
 		var ofs1 = $(".content-01").offset().top
 		var ofs2 = $(".content-04").offset().top
 		var ofs3 = ofs2 + $(".content-04").height();

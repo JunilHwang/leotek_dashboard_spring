@@ -1,0 +1,117 @@
+<section class="home">
+    <h2 class="content-title">AirTumbler Elementary School</h2>
+    <span class="title_comment">The air quality of the equipment is good.</span>
+    <div>
+        <ul class="part1">
+            <li class="indoor">
+                <div>
+                    <template v-if="nowIndoor">
+                        <strong v-html="nowIndoor.DVC_NM" class="dvc_name" />
+                        <div class="state">
+                            <div :class="'cycle '+nowIndoor.color"></div>
+                            <div class="score">
+                                <span>Score</span>
+                                <strong v-html="nowIndoor.score" />
+                            </div>
+                        </div>
+                        <ul>
+                            <li>
+                                <span class="lbl">Temp.</span>
+                                <span class="desc">{{nowIndoor.temp}}  <span class="unit">℃</span></span>
+                            </li>
+                            <li>
+                                <span class="lbl">Hum.</span>
+                                <span class="desc">{{nowIndoor.hum}} <span class="unit">%</span></span>
+                            </li>
+                            <li>
+                                <span class="lbl">Dust</span>
+                                <span class="desc">{{nowIndoor.dust}} <span class="unit">μg</span></span>
+                            </li>
+                            <li>
+                                <span class="lbl">Co2</span>
+                                <span class="desc">{{nowIndoor.co2}} <span class="unit">ppm</span></span>
+                            </li>
+                            <li>
+                                <span class="lbl">TVOC</span>
+                                <span class="desc">{{nowIndoor.tvoc}} <span class="unit">ppb</span></span>
+                            </li>
+                        </ul>
+                    </template>
+                    <tmeplate v-else>
+                        <p class="please">No Indoor Data</p>
+                    </tmeplate>
+                </div>
+            </li>
+            <li class="outdoor">
+                <div>
+                    <template v-if="nowOutdoor">
+                        <strong v-html="nowOutdoor.DVC_NM" class="dvc_name" />
+                        <div class="state">
+                            <div :class="'cycle '+nowOutdoor.color"></div>
+                            <div class="score">
+                                <span>Score</span>
+                                <strong v-html="nowOutdoor.score" />
+                            </div>
+                        </div>
+                        <ul>
+                            <li>
+                                <span class="lbl">Temp.</span>
+                                <span class="desc">{{nowOutdoor.temp}}  <span class="unit">℃</span></span>
+                            </li>
+                            <li>
+                                <span class="lbl">Hum.</span>
+                                <span class="desc">{{nowOutdoor.hum}} <span class="unit">%</span></span>
+                            </li>
+                            <li>
+                                <span class="lbl">Dust</span>
+                                <span class="desc">{{nowOutdoor.dust}} <span class="unit">μg</span></span>
+                            </li>
+                        </ul>
+                    </template>
+                    <tmeplate v-else>
+                        <p class="please">No Outdoor Data</p>
+                    </tmeplate>
+                </div>
+            </li>
+        </ul>
+        <!--<div class="part2">-->
+            <!--<p class="date">{{date}}</p>-->
+            <!--<p class="temp">-->
+                <!--<span class="place">{{place}}</span>-->
+                <!--<span>{{temp}}</span>-->
+            <!--</p>-->
+            <!--<div class="icon"><img src="/img/icon-weather{{weather_number}}.png" alt="{{weather_number}}"></div>-->
+        <!--</div>-->
+        <!--<ul class="part3">-->
+            <!--<li>-->
+                <!--<h3>Now</h3>-->
+                <!--<ul>-->
+                    <!--<li v-for="obj in now_list" :class="obj.color">-->
+                        <!--<a href="#" v-html="obj.DVC_NM" />-->
+                    <!--</li>-->
+                <!--</ul>-->
+            <!--</li>-->
+            <!--<li>-->
+                <!--<h3>Week</h3>-->
+                <!--<ul>-->
+                    <!--<li v-for="obj in week_list" :class="obj.color">-->
+                        <!--<a href="#" v-html="obj.DVC_NM" />-->
+                    <!--</li>-->
+                <!--</ul>-->
+            <!--</li>-->
+        <!--</ul>-->
+        <!--<div class="part4">-->
+            <!--<div class="ventiation">-->
+                <!--<div class="icon_wrap"><img src="/img/icon-push-big.png" alt="push"></div>-->
+                <!--<div class="info">-->
+                    <!--<strong class="time" v-html="time" />-->
+                    <!--<strong class="place" v-html="{{place}}" />-->
+                    <!--<p>Ventilation is required</p>-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="mini_map">-->
+
+            <!--</div>-->
+        <!--</div>-->
+    </div>
+</section>

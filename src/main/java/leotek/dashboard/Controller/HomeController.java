@@ -159,7 +159,7 @@ public class HomeController {
         return json;
     }
 
-    public static String fileGetContents(String filePath) {
+    public static String FileGetContents(String filePath) {
         try {
             File file = new File(filePath);
             byte bt[] = new byte[(int)file.length()];
