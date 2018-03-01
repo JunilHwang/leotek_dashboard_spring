@@ -1,10 +1,59 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+<section class="content-05">
+    <h2 class="content-title">Information of Weather</h2>
+    <div class="weather_wrap">
+        <h3 v-html="today" />
+        <ul class="today_info">
+            <li class="part1">
+                <strong v-html="place" />
+                <p v-html="temp" />
+            </li>
+            <li class="part2">
+                <ul>
+                    <li>
+                        <div class="icon_wrap"><img src="./public/img/icon-temp.png" alt="temp"></div>
+                        <div class="info">
+                            <strong>Min./Max. Temp.</strong>
+                            <p>
+                                H{{max_temp}} / L{{min_temp}}
+                            </p>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="icon_wrap"><img src="./public/img/icon-rain.png" alt="rain"></div>
+                        <div class="info">
+                            <strong>Rainfall</strong>
+                            <p v-html="rain" />
+                        </div>
+                    </li>
+                    <li>
+                        <div class="icon_wrap"><img src="./public/img/icon-humidity.png" alt="humidity"></div>
+                        <div class="info">
+                            <strong>Humidity</strong>
+                            <p v-html="humidity" />
+                        </div>
+                    </li>
+                    <li>
+                        <div class="icon_wrap"><img src="./public/img/icon-dust.png" alt="dust"></div>
+                        <div class="info">
+                            <strong>Dust</strong>
+                            <p v-html="dust" />
+                        </div>
+                    </li>
+                </ul>
+            </li>
+            <li class="part3"><img :src="'./public/img/icon-weather'+weather_number+'.png'" :alt="weather_number"></li>
+        </ul>
+        <ul class="week_info">
+            <li v-for="obj in week_info">
+                <strong v-html="obj.weekName" />
+                <div>
+                    <div class="icon_wrap"><img :src="'./public/img/icon-weather'+obj.weather_number+'.png'" :alt="obj.weather_number"></div>
+                    <div class="temp_info">
+                        <span v-html="obj.min_temp" />
+                        <span v-html="obj.max_temp" />
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+</section>

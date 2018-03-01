@@ -13,7 +13,7 @@
             FROM 	MTR_MI_HIS
             where 	DVC_SRNO = #{srno}
             AND		UPD_DT  BETWEEN #{start} and #{end}
-            ORDER BY UPD_DT ASC;
+            ORDER BY WRK_DT ASC, WRK_TM ASC;
 	</select>
     <select id="GraphPointGet" parameterType="java.util.HashMap" resultType="java.util.HashMap">
             SELECT
@@ -36,5 +36,65 @@
                 where 	DVC_SRNO = #{srno}
                 AND		UPD_DT  BETWEEN #{start} and #{end}
             ) t;
+    </select>
+    <select id="GetTodayList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+        SELECT	mtr.*,
+                dvc.USR_ID,
+                dvc.DVC_NM,
+                dvc.DVC_CD,
+                dvc.DVC_GIS_X,
+                dvc.DVC_GIS_Y,
+                'color' = CASE
+                WHEN mtr.score &lt;= 25 THEN 'color4'
+                WHEN mtr.score &lt;= 50 THEN 'color3'
+                WHEN mtr.score &lt;= 75 THEN 'color2'
+                else 'color1'
+                END
+        FROM	(
+                    SELECT	DVC_SRNO,
+                    avg(TVOC_IDX) AS TVOC,
+                    avg(CO2_IDX) AS CO2,
+                    avg(DUST_IDX) AS DUST,
+                    avg(TEMP) as TEMP,
+                    avg(HUM) as HUM,
+                    floor((avg(CIAQI)/450)*100) as score
+                    FROM	MTR_MI_HIS
+                    WHERE	DVC_SRNO in (SELECT DVC_SRNO FROM DVC_MT WHERE USR_ID = #{user_id})
+                    and		UPD_DT >= getdate()-1
+                    group by DVC_SRNO
+                ) mtr
+        JOIN	DVC_MT dvc on mtr.DVC_SRNO = dvc.DVC_SRNO
+        WHERE	dvc.USR_ID = #{user_id}
+        order by mtr.score ASC
+    </select>
+    <select id="GetWeekList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+        SELECT	mtr.*,
+                dvc.USR_ID,
+                dvc.DVC_NM,
+                dvc.DVC_CD,
+                dvc.DVC_GIS_X,
+                dvc.DVC_GIS_Y,
+                'color' = CASE
+                WHEN mtr.score &lt;= 25 THEN 'color4'
+                WHEN mtr.score &lt;= 50 THEN 'color3'
+                WHEN mtr.score &lt;= 75 THEN 'color2'
+                else 'color1'
+                END
+        FROM	(
+                    SELECT	DVC_SRNO,
+                    avg(TVOC_IDX) AS TVOC,
+                    avg(CO2_IDX) AS CO2,
+                    avg(DUST_IDX) AS DUST,
+                    avg(TEMP) as TEMP,
+                    avg(HUM) as HUM,
+                    floor((avg(CIAQI)/450)*100) as score
+                    FROM	MTR_MI_HIS
+                    WHERE	DVC_SRNO in (SELECT DVC_SRNO FROM DVC_MT WHERE USR_ID = #{user_id})
+                    and		UPD_DT >= getdate()-7
+                    group by DVC_SRNO
+                ) mtr
+        JOIN	DVC_MT dvc on mtr.DVC_SRNO = dvc.DVC_SRNO
+        WHERE	dvc.USR_ID = #{user_id}
+        order by mtr.score ASC
     </select>
 </mapper>

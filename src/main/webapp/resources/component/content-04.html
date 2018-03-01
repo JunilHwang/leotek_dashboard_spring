@@ -17,9 +17,9 @@
 			</p>
 			<ul>
 				<li v-for="obj in deviceList" :class="obj.color">
-		                <a href="#" v-html="obj.DVC_NM" @click="selectDevice(obj)" />
-		                <span class="score" v-html="obj.score" />
-		            </li>
+					<a href="#" v-html="obj.DVC_NM" @click="selectDevice(obj)" />
+					<span class="score" v-html="obj.score" />
+				</li>
 			</ul>
 		</div>
 	</div>

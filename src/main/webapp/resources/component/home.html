@@ -1,5 +1,5 @@
 <section class="home">
-    <h2 class="content-title">AirTumbler Elementary School</h2>
+    <h2 class="content-title">State Board</h2>
     <span class="title_comment">The air quality of the equipment is good.</span>
     <div>
         <ul class="part1">
@@ -17,29 +17,29 @@
                         <ul>
                             <li>
                                 <span class="lbl">Temp.</span>
-                                <span class="desc">{{nowIndoor.temp}}  <span class="unit">℃</span></span>
+                                <span class="desc">{{nowIndoor.TEMP}}  <span class="unit">℃</span></span>
                             </li>
                             <li>
                                 <span class="lbl">Hum.</span>
-                                <span class="desc">{{nowIndoor.hum}} <span class="unit">%</span></span>
+                                <span class="desc">{{nowIndoor.HUM}} <span class="unit">%</span></span>
                             </li>
                             <li>
                                 <span class="lbl">Dust</span>
-                                <span class="desc">{{nowIndoor.dust}} <span class="unit">μg</span></span>
+                                <span class="desc">{{nowIndoor.DUST}} <span class="unit">μg</span></span>
                             </li>
                             <li>
                                 <span class="lbl">Co2</span>
-                                <span class="desc">{{nowIndoor.co2}} <span class="unit">ppm</span></span>
+                                <span class="desc">{{nowIndoor.CO2}} <span class="unit">ppm</span></span>
                             </li>
                             <li>
                                 <span class="lbl">TVOC</span>
-                                <span class="desc">{{nowIndoor.tvoc}} <span class="unit">ppb</span></span>
+                                <span class="desc">{{nowIndoor.TVOC}} <span class="unit">ppb</span></span>
                             </li>
                         </ul>
                     </template>
-                    <tmeplate v-else>
+                    <template v-else>
                         <p class="please">No Indoor Data</p>
-                    </tmeplate>
+                    </template>
                 </div>
             </li>
             <li class="outdoor">
@@ -56,62 +56,71 @@
                         <ul>
                             <li>
                                 <span class="lbl">Temp.</span>
-                                <span class="desc">{{nowOutdoor.temp}}  <span class="unit">℃</span></span>
+                                <span class="desc">{{nowOutdoor.TEMP}}  <span class="unit">℃</span></span>
                             </li>
                             <li>
                                 <span class="lbl">Hum.</span>
-                                <span class="desc">{{nowOutdoor.hum}} <span class="unit">%</span></span>
+                                <span class="desc">{{nowOutdoor.HUM}} <span class="unit">%</span></span>
                             </li>
                             <li>
                                 <span class="lbl">Dust</span>
-                                <span class="desc">{{nowOutdoor.dust}} <span class="unit">μg</span></span>
+                                <span class="desc">{{nowOutdoor.DUST}} <span class="unit">μg</span></span>
                             </li>
                         </ul>
                     </template>
-                    <tmeplate v-else>
+                    <template v-else>
                         <p class="please">No Outdoor Data</p>
-                    </tmeplate>
+                    </template>
                 </div>
             </li>
         </ul>
-        <!--<div class="part2">-->
-            <!--<p class="date">{{date}}</p>-->
-            <!--<p class="temp">-->
-                <!--<span class="place">{{place}}</span>-->
-                <!--<span>{{temp}}</span>-->
-            <!--</p>-->
-            <!--<div class="icon"><img src="/img/icon-weather{{weather_number}}.png" alt="{{weather_number}}"></div>-->
-        <!--</div>-->
-        <!--<ul class="part3">-->
-            <!--<li>-->
-                <!--<h3>Now</h3>-->
-                <!--<ul>-->
-                    <!--<li v-for="obj in now_list" :class="obj.color">-->
-                        <!--<a href="#" v-html="obj.DVC_NM" />-->
-                    <!--</li>-->
-                <!--</ul>-->
-            <!--</li>-->
-            <!--<li>-->
-                <!--<h3>Week</h3>-->
-                <!--<ul>-->
-                    <!--<li v-for="obj in week_list" :class="obj.color">-->
-                        <!--<a href="#" v-html="obj.DVC_NM" />-->
-                    <!--</li>-->
-                <!--</ul>-->
-            <!--</li>-->
-        <!--</ul>-->
-        <!--<div class="part4">-->
-            <!--<div class="ventiation">-->
-                <!--<div class="icon_wrap"><img src="/img/icon-push-big.png" alt="push"></div>-->
-                <!--<div class="info">-->
-                    <!--<strong class="time" v-html="time" />-->
-                    <!--<strong class="place" v-html="{{place}}" />-->
-                    <!--<p>Ventilation is required</p>-->
-                <!--</div>-->
-            <!--</div>-->
-            <!--<div class="mini_map">-->
-
-            <!--</div>-->
-        <!--</div>-->
+        <div class="part2">
+            <p class="date">{{weather.date}}</p>
+            <p class="temp">
+                <span class="place">{{weather.place}}</span>
+                <span class="temp_number">{{weather.temp}}</span>
+            </p>
+            <div class="icon"><img :src="'./public/img/icon-weather'+weather.number+'.png'" :alt="weather.number" width="230"></div>
+        </div>
+        <ul class="part3">
+            <li>
+                <h3><span>Today Average</span></h3>
+                <ul v-if="today_list">
+                    <li v-for="obj in today_list" :class="obj.color">
+                        <a href="#" @click="changeDoor(obj)">
+                            {{obj.DVC_NM}}
+                            <strong>[{{obj.score}}]</strong>
+                        </a>
+                    </li>
+                </ul>
+                <p class="loading" v-else>Loading..</p>
+            </li>
+            <li>
+                <h3><span>Week Average</span></h3>
+                <ul v-if="week_list">
+                    <li v-for="obj in week_list" :class="obj.color">
+                        <a href="#">
+                            {{obj.DVC_NM}}
+                            <strong>[{{obj.score}}]</strong>
+                        </a>
+                    </li>
+                </ul>
+                <p class="loading" v-else>Loading..</p>
+            </li>
+        </ul>
+        <div class="part4">
+            <div class="ventiation">
+                <div class="icon_wrap"><img src="./public/img/icon-push-big.png" alt="push"></div>
+                <div class="info" v-if="today_list">
+                    <strong class="time" v-html="time" />
+                    <strong class="place" v-html="today_list[0].DVC_NM" />
+                    <p>Ventilation is required</p>
+                </div>
+                <div v-else>
+                    <p>No Data</p>
+                </div>
+            </div>
+            <div id="mini_map">No Data</div>
+        </div>
     </div>
 </section>

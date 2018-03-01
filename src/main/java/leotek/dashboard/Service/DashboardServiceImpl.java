@@ -4,6 +4,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -30,5 +31,15 @@ public class DashboardServiceImpl implements DashboardService {
     @Override
     public HashMap GraphPointGet(HashMap params) {
         return sqlSession.selectOne("Dashboard.GraphPointGet", params);
+    }
+
+    @Override
+    public List GetTodayList(HashMap params) {
+        return sqlSession.selectList("Dashboard.GetTodayList", params);
+    }
+
+    @Override
+    public List GetWeekList(HashMap params) {
+        return sqlSession.selectList("Dashboard.GetWeekList", params);
     }
 }

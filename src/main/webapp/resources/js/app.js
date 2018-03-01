@@ -29,11 +29,12 @@ var bus = new Vue({
 			'TVOC_IDX':" ppb",
 		},
 		map:null,
+		mini_map:null,
 		infowindow:{},
-		prevwindow:false
+		prevwindow:false,
+		homeData:false,
 	},
-	computed:{
-	},
+	computed:{},
 	methods:{
 		setPage:function(e){
 			e.preventDefault();
@@ -41,7 +42,6 @@ var bus = new Vue({
 		getGraph:function(){
 			var _this = this;
 			var start_date = getNow(), end_date = getNow();
-			//var start_date = "2018-01-22", end_date = "2018-01-23";
 			if($(".datepicker.start").length){
 				start_date = $(".datepicker.start").val();
 				end_date = $(".datepicker.end").val();
@@ -121,27 +121,79 @@ function site(){
 			template:getTemplate('home'),
 			data:function(){
 				return {
-					nowIndoor:{
-                        DVC_NM:'TestIndoor',
-                        color:'color1',
-                        score:'50',
-                        temp:'1',
-                        hum:'2',
-                        dust:'3',
-                        co2:'4',
-                        tvoc:'5',
+					nowIndoor:localStorage.getItem('nowIndoor') ? JSON.parse(localStorage.getItem('nowIndoor')) : null,
+					nowOutdoor:localStorage.getItem('nowOutdoor') ? JSON.parse(localStorage.getItem('nowOutdoor')) : null,
+					weather:{
+                        date:null,
+                        place:'Seoul',
+                        temp:'15 ℃',
+                        number:'1-3',
 					},
-					nowOutdoor:{
-                        DVC_NM:'TestOutdoor',
-                        color:'color2',
-                        score:'50',
-                        temp:'1',
-                        hum:'2',
-                        dust:'3',
-                        co2:'4',
-                        tvoc:'5',
-					}
+					today_list:localStorage.getItem('today_list') ? JSON.parse(localStorage.getItem('today_list')) : null,
+					week_list:localStorage.getItem('week_list') ? JSON.parse(localStorage.getItem('week_list')) : null,
+					time:null
 				}
+			},
+			created:function(){
+				this.getNowTime();
+                this.getList();
+                setInterval(this.getNowTime, 1000);
+                setInterval(this.getList, 1000*30);
+                bus.homeData = this;
+			},
+			methods:{
+				getNowTime:function(){
+                    var date = new Date();
+                    var h = date.getHours();
+                    var i = date.getMinutes();
+                    var s = date.getSeconds();
+                    if(h < 10) h = "0"+h;
+                    if(i < 10) i = "0"+i;
+                    if(s < 10) s = "0"+s;
+                    this.time = h+':'+i+':'+s;
+                    this.weather.date = date.toUTCString();
+				},
+				getList:function(){
+					var _this = this;
+                    $.ajax({
+                        type:'get',
+                        url:'/getRangeList',
+                        data:{user_id:bus.member.USR_ID},
+                        success:function(data){
+                            _this.today_list = data.today;
+                            _this.week_list = data.week;
+                            for(var i=0, len=data.today.length; i<len; i++){
+                                if(data.today[i].DVC_CD != '03'){
+                                    _this.nowIndoor = data.today[i];
+                                    localStorage.setItem("nowIndoor",JSON.stringify(data.today[i]));
+                                    break;
+                                }
+                            }
+                            for(var i=0, len=data.today.length; i<len; i++){
+                                if(data.today[i].DVC_CD == '03'){
+                                    _this.nowOutdoor = data.today[i];
+                                    localStorage.setItem("nowOutdoor",JSON.stringify(data.today[i]));
+                                    break;
+                                }
+                            }
+                            if(data.today.length) localStorage.setItem("today_list",JSON.stringify(data.today));
+                            if(data.week.length) localStorage.setItem("week_list",JSON.stringify(data.week));
+                        }
+                    })
+				},
+                changeDoor:function(obj){
+					if(obj.DVC_CD == '03'){
+						this.nowOutdoor = obj;
+					} else {
+                        this.nowIndoor = obj;
+					}
+					miniMap();
+				}
+			},
+			mounted:function(){
+                google.maps.event.addDomListener(window, 'load', miniMap);
+                miniMap();
+                setInterval(miniMap,30000);
 			}
 		},
 		'content-01':{
@@ -215,7 +267,7 @@ function site(){
                 db.getDevice(option);
                 setInterval(function(){
                     db.getDevice(option)
-                },1000*60);
+                },1000*30);
 			}
 		},
 		'content-02':{
@@ -260,15 +312,10 @@ function site(){
 				$(".datepicker.start").datepicker();
 				$(".datepicker.end").datepicker({"minDate":new Date()})
 				$(".datepicker").val(getNow());
-				if(bus.activeData) {
-                    if(!bus.isHome) bus.getGraph();
-                    setInterval(function () {
-                        if(!bus.isHome) {
-                            bus.getGraph();
-                            initMap();
-                        }
-                    }, 1000 * 30)
-                }
+				if(!bus.isHome) bus.getGraph();
+				setInterval(function () {
+					if(!bus.isHome) bus.getGraph();
+				}, 1000 * 30)
 			}
 		},
 		'content-03':{
@@ -315,6 +362,8 @@ function site(){
 			},
 			mounted:function(){
 				google.maps.event.addDomListener(window, 'load', initMap);
+                initMap();
+                setInterval(initMap,30000);
 			},
 			methods:{
 				sortDevice:function(){
@@ -346,6 +395,51 @@ function site(){
 					}
 				}
 			}
+		},
+		'content-05':{
+            template:getTemplate('content-05'),
+			data:function(){
+            	return {
+            		today:(function(){
+            			var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+            			var date = new Date();
+            			var y = date.getFullYear(),
+							m = months[date.getMonth()],
+							d = date.getDate() + "st";
+            			var fullDate = m+' '+d+' '+y;
+            			return fullDate;
+					}()),
+					place:'Seoul',
+					temp:'21 ℃',
+					max_temp:'24 ℃',
+					min_temp:'12 ℃',
+					rain:'70 %',
+                    humidity:'70 %',
+                    dust:'Very Bad',
+                    weather_number:"1-"+(Math.floor(Math.random()*5)+1),
+					week_info:(function(){
+                        var weeks = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],
+							standardDate = new Date(),
+							week_list = [],
+							date, weekName, min_temp, max_temp, weather_number;
+						for(var i=0; i<7; i++){
+							date = new Date(standardDate.getTime() + (1000*60*60*24*i));
+                            weekName = weeks[date.getDay()];
+							weather_number = "1-"+(Math.floor(Math.random()*5)+1);
+							min_temp = parseInt(Math.random()*5);
+							max_temp = 5+parseInt(Math.random()*10);
+                            var obj = {
+                                weekName:weekName,
+                                weather_number:weather_number,
+                                min_temp:min_temp+" ℃",
+                                max_temp:max_temp+" ℃",
+							};
+                            week_list.push(obj);
+						}
+						return week_list;
+					}())
+				}
+			}
 		}
 	}
 }
@@ -353,7 +447,6 @@ function site(){
 //Application Execute
 app();
 
-//get
 function getTemplate(file,option){
 	if(!option) option = null;
 	$.ajax({
@@ -501,7 +594,82 @@ function graphCreate(){
 	}
 }
 
+function miniMap() {
+	var nowIndoor = bus.homeData.nowIndoor;
+    if(!nowIndoor) return;
+    var x = nowIndoor.DVC_GIS_X;
+    var y = nowIndoor.DVC_GIS_Y;
+    var map = new google.maps.Map(document.getElementById('mini_map'),{
+        zoom: 19,
+        center: new google.maps.LatLng(y,x),
+        mapTypeId: 'roadmap'
+    });
+    bus.mini_map = map;
+    bus.homeData.today_list.forEach(function(doors){
+        var x = doors.DVC_GIS_X;
+        var y = doors.DVC_GIS_Y;
+        var pos = new google.maps.LatLng(y, x);
+        var icon = './public/img/icon-tumbler2-mini.png';
+        if(doors.DVC_CD == 03) icon = './public/img/icon-tumbler1-mini.png';
+        var marker = new google.maps.Marker({
+            position: pos,
+            icon:icon,
+            map: map,
+        });
+        makerCircle.prototype = new google.maps.OverlayView();
+        makerCircle.prototype.door = doors;
+        makerCircle.prototype.draw = draw;
+        makerCircle.prototype.remove = remove;
+        makerCircle.prototype.getPosition = getPosition;
+        makerCircle.prototype.onAdd = onAdd;
+        var circle = new makerCircle(map,pos);
+    })
+    function makerCircle(map, pos){
+        this.latlng = pos;
+        this.setMap(map);
+    }
+    function onAdd(){
+        var self = this;
+        var div = this.div;
+        var color = {
+            'color1':'#339cd0',
+            'color2':'#8fd400',
+            'color3':'#ffbe23',
+            'color4':'#ff6961',
+        }
+        div = this.div = document.createElement('div');
+        div.style.width = '30px';
+        div.style.height = '30px';
+        div.style.borderRadius = '15px';
+        div.style.color = '#fff';
+        div.style.fontSize = '12px';
+        div.style.lineHeight = '30px';
+        div.style.textAlign = 'center';
+        div.style.position = 'absolute';
+        div.style.zIndex = 1000;
+        div.style.backgroundColor = color[this.door.color];
+        div.innerHTML = this.door.score
+    }
+    function draw(){
+        var point = this.getProjection().fromLatLngToDivPixel(this.latlng);
+        this.div.style.left = (point.x+10) + 'px';
+        this.div.style.top = (point.y-20) + 'px';
+        var panes = this.getPanes();
+        panes.overlayImage.appendChild(this.div);
+    }
+    function remove() {
+        if (this.div) {
+            this.div.parentNode.removeChild(this.div);
+            this.div = null;
+        }
+    }
+    function getPosition() {
+        return this.latlng;
+    };
+}
+
 function initMap() {
+	if(!bus.activeData) return;
 	var x = bus.activeData.DVC_GIS_X;
 	var y = bus.activeData.DVC_GIS_Y;
 	var map = new google.maps.Map(document.getElementById('map'), {
@@ -674,21 +842,32 @@ $.datepicker.setDefaults({
 })
 
 $(window).on("scroll load",function(){
-	if(bus.isHome == false) if($(".content-01,.content-02,.content-03,.content-04").length){
+	if(bus.isHome == false) if($(".content-01,.content-02,.content-03,.content-04,.content-05").length){
 		var ofs1 = $(".content-01").offset().top
 		var ofs2 = $(".content-04").offset().top
-		var ofs3 = ofs2 + $(".content-04").height();
+		var ofs3 = $(".content-05").offset().top;
+		var ofs4 = ofs3 + $(".content-05").height();
 		var wt = $(window).scrollTop() + 140;
+		var btmChk = $(document).height() - $(window).height() - $(window).scrollTop();
 		if(wt > ofs1 && wt < ofs2){
 			if(!$(".target-content-01.active").length){
 				$(".gnb .active").removeClass("active");
 				$(".target-content-01").addClass("active");
 			}
-		} else if(wt > ofs2){
+		} else if(wt > ofs2 && wt < ofs3){
 			if(!$(".target-content-04.active").length){
 				$(".gnb .active").removeClass("active");
 				$(".target-content-04").addClass("active");
 			}
+		} else if(wt > ofs3){
+			if(!$(".target-content-05.active").length){
+				$(".gnb .active").removeClass("active");
+				$(".target-content-05").addClass("active");
+			}
+		}
+		if(btmChk == 0) if(!$(".target-content-05.active").length){
+			$(".gnb .active").removeClass("active");
+			$(".target-content-05").addClass("active");
 		}
 	}
 })
