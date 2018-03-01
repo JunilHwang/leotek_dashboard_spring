@@ -24,6 +24,7 @@ var dataProcessor = new Vue({
 					if(data){
 						bus.member = data;
 						alert('로그인 되었습니다.');
+						localStorage.clear();
 					} else {
 						alert('일치하는 아이디가 없습니다.');
 					}

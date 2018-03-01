@@ -93,7 +93,7 @@
                         </a>
                     </li>
                 </ul>
-                <p v-else>Loading..</p>
+                <p class="loading" v-else>Loading..</p>
             </li>
             <li>
                 <h3><span>Week Average</span></h3>
@@ -105,21 +105,22 @@
                         </a>
                     </li>
                 </ul>
-                <p v-else>Loading..</p>
+                <p class="loading" v-else>Loading..</p>
             </li>
         </ul>
-        <div class="part4" v-if="today_list">
+        <div class="part4">
             <div class="ventiation">
                 <div class="icon_wrap"><img src="./public/img/icon-push-big.png" alt="push"></div>
-                <div class="info">
+                <div class="info" v-if="today_list">
                     <strong class="time" v-html="time" />
                     <strong class="place" v-html="today_list[0].DVC_NM" />
                     <p>Ventilation is required</p>
                 </div>
+                <div v-else>
+                    <p>No Data</p>
+                </div>
             </div>
-            <div id="mini_map">
-
-            </div>
+            <div id="mini_map">No Data</div>
         </div>
     </div>
 </section>

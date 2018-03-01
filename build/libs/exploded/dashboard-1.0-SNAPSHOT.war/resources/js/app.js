@@ -1,6 +1,6 @@
 var bus = new Vue({
 	data:{
-		isHome:false,
+		isHome:true,
 		member:dataProcessor.getMember(),
 		device:localStorage.getItem('device') ? JSON.parse(localStorage.getItem('device')) : [],
 		indoor:localStorage.getItem('device_indoor') ? JSON.parse(localStorage.getItem('device_indoor')) : [],
@@ -34,8 +34,7 @@ var bus = new Vue({
 		prevwindow:false,
 		homeData:false,
 	},
-	computed:{
-	},
+	computed:{},
 	methods:{
 		setPage:function(e){
 			e.preventDefault();
@@ -43,7 +42,6 @@ var bus = new Vue({
 		getGraph:function(){
 			var _this = this;
 			var start_date = getNow(), end_date = getNow();
-			//var start_date = "2018-01-22", end_date = "2018-01-23";
 			if($(".datepicker.start").length){
 				start_date = $(".datepicker.start").val();
 				end_date = $(".datepicker.end").val();
@@ -178,8 +176,8 @@ function site(){
                                     break;
                                 }
                             }
-                            localStorage.setItem("today_list",JSON.stringify(data.today));
-                            localStorage.setItem("week_list",JSON.stringify(data.week));
+                            if(data.today.length) localStorage.setItem("today_list",JSON.stringify(data.today));
+                            if(data.week.length) localStorage.setItem("week_list",JSON.stringify(data.week));
                         }
                     })
 				},
@@ -597,9 +595,11 @@ function graphCreate(){
 }
 
 function miniMap() {
-    var x = bus.homeData.nowIndoor.DVC_GIS_X;
-    var y = bus.homeData.nowIndoor.DVC_GIS_Y;
-    var map = new google.maps.Map(document.getElementById('mini_map'), {
+	var nowIndoor = bus.homeData.nowIndoor;
+    if(!nowIndoor) return;
+    var x = nowIndoor.DVC_GIS_X;
+    var y = nowIndoor.DVC_GIS_Y;
+    var map = new google.maps.Map(document.getElementById('mini_map'),{
         zoom: 19,
         center: new google.maps.LatLng(y,x),
         mapTypeId: 'roadmap'
@@ -669,6 +669,7 @@ function miniMap() {
 }
 
 function initMap() {
+	if(!bus.activeData) return;
 	var x = bus.activeData.DVC_GIS_X;
 	var y = bus.activeData.DVC_GIS_Y;
 	var map = new google.maps.Map(document.getElementById('map'), {
@@ -848,7 +849,6 @@ $(window).on("scroll load",function(){
 		var ofs4 = ofs3 + $(".content-05").height();
 		var wt = $(window).scrollTop() + 140;
 		var btmChk = $(document).height() - $(window).height() - $(window).scrollTop();
-		console.log(btmChk);
 		if(wt > ofs1 && wt < ofs2){
 			if(!$(".target-content-01.active").length){
 				$(".gnb .active").removeClass("active");
